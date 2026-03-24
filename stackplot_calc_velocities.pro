@@ -5,7 +5,6 @@ PRO stackplot_calc_velocities, line_x=line_x, line_y=line_y, quiet=quiet, transp
 ;2016-01-20	JD	- changed the calculation of D_vel using the sqrt sigma formula
 ;2016-02-22	JD	- added keyword start_time
 ;			- changed dt to 0.6 (default) in D_vel0
-;2018-01-08	JD	- deprecated TRANSPOSE; added NO_TRANSPOSE; corresponding to changes in PLOT_ST_STACKPLOT
 
 
 
@@ -28,11 +27,11 @@ if not(keyword_set(dt)) then dt		= 6d
 for j=0, NV-2, 1 do begin
 
   vel[j]	= (line_x[j+1] -line_x[j]) / (line_y[j+1] -line_y[j]) / arcsec2km				; km s^(-1)
-  if not(keyword_set(no_transpose)) then vel[j] = 1d/vel[j]
+  if     keyword_set(transpose) then vel[j] = 1d/vel[j]
 
   ;uncertainty. Take the position uncertainty to be half the AIA resolution, i.e., 0.75"
   ;             Take the time uncertainty to be half the cadence, i.e., 6 s
-  if    (keyword_set(no_transpose)) then begin
+  if not(keyword_set(transpose)) then begin
 ;     D_vel[j]	= 1/2d /arcsec2km  *( (line_x[j+1] -line_x[j] +2*ds)/ (line_y[j+1] -line_y[j] -2*dt) $
 ; 				     -(line_x[j+1] -line_x[j] -2*ds)/ (line_y[j+1] -line_y[j] +2*dt) )
 ;     D_vel0[j]	= 1/2d /arcsec2km  *( (line_x[j+1] -line_x[j] +1.5)/ (line_y[j+1] -line_y[j] -2*dt) $
